@@ -31,24 +31,18 @@ proc main =
   # Initialization
   # --------------------------------------------------------------------------------------
   initWindow(screenWidth, screenHeight, "classic game: floppy")
-  try:
-    initGame()
-    when defined(emscripten):
-      emscriptenSetMainLoop(tick, 60, 1)
-    else:
-      setTargetFPS(60)
-      # ----------------------------------------------------------------------------------
-      # Main game loop
-      while not windowShouldClose(): # Detect window close button or ESC key
-        # Update and Draw
-        # --------------------------------------------------------------------------------
-        tick()
-        # --------------------------------------------------------------------------------
-    # De-Initialization
-    # ------------------------------------------------------------------------------------
+  defer:
     unloadGame() # Unload loaded data (textures, sounds, models...)
-  finally:
-    closeWindow() # Close window and OpenGL context
+    closeWindow()
+
+  initGame()
+  when defined(emscripten):
+    emscriptenSetMainLoop(tick, 60, 1)
+  else:
+    setTargetFPS(60)
+    while not windowShouldClose(): # Detect window close button or ESC key
+      tick()
+    
   
 main()
 
