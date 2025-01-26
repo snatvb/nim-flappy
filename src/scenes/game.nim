@@ -2,15 +2,12 @@ import raylib as rl
 import std/random
 import ../scene
 import ../core/sprite, ../core/math
+import ../objects/tube
 
 type
   Player = object
     position: rl.Vector2
     sprite: Sprite
-    
-  Tube = object
-    position: rl.Vector2
-    sprite: StaticSprite
     
   GroundTile = object
     position: rl.Vector2
@@ -37,12 +34,6 @@ proc newTube(): Tube =
       )
     )
     
-proc update(tube: var Tube, delta: float) =
-  tube.position.x -= speed * delta
-
-proc draw(self: Tube) =
-  self.sprite.draw(self.position)
-
 proc load* =
   player = Player(
     position: rl.Vector2(x:100, y:100),
@@ -83,7 +74,7 @@ proc update* =
   player.sprite.draw(player.position)
   
   for i in 0..<tubes.len:
-    tubes[i].update(delta)
+    tubes[i].update(speed, delta)
     tubes[i].draw()
     
   for i in 0..<ground.len:
