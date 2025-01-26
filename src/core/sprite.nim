@@ -1,5 +1,5 @@
 import raylib as rl
-import ./math
+import math
 
 type
   Direction* {.size: sizeof(int8).} = enum 
@@ -15,6 +15,12 @@ type
     direction: Direction
     restTime: float32
     rect: rl.Rectangle
+  
+  StaticSprite* = object
+    size*: Size
+    offset*: (int32, int32)
+    texture*: rl.Texture2D
+    rect*: rl.Rectangle
     
 func newSprite*(texture: sink rl.Texture2D, size: Size, frames: int16, offset: (int32, int32) = (0, 0), frame:int16 = 0, animationSpeed = 0.2): Sprite =
   Sprite(
@@ -46,4 +52,20 @@ proc tick*(self: var Sprite, delta: float32) =
   self.rect.y = self.offset[1].float32
   
 proc draw*(self: Sprite, position: rl.Vector2) =
+  rl.drawTexture(self.texture, self.rect, position, rl.White)
+  
+proc newStaticSprite*(texture: sink rl.Texture2D, size: Size, offset: (int32, int32) = (0, 0)): StaticSprite =
+  StaticSprite(
+    texture: texture,
+    size: size,
+    offset: offset,
+    rect: rl.Rectangle(
+      x: offset[0].float32,
+      y: offset[1].float32,
+      width: size.width.float32,
+      height: size.height.float32
+    )
+  )
+
+proc draw*(self: StaticSprite, position: rl.Vector2) =
   rl.drawTexture(self.texture, self.rect, position, rl.White)
