@@ -1,16 +1,14 @@
 import raylib
 import scenes/welcome, scenes/game
 import scene
+import renderer
 
 const
-  screenWidth = 800
-  screenHeight = 450
+  screenWidth = 1280
+  screenHeight = 720
 
-  MaxTubes = 100
-  FloppyRadius = 24
-  TubeWidth = 80
-  
-  
+var target: RenderTexture2D
+
 proc draw =
   beginDrawing()
   clearBackground(Black)
@@ -22,9 +20,14 @@ proc initGame =
 proc unloadGame = discard
 
 proc tick =
+  var renderer = scene.getRenderer()
+  renderer.beginMode()
+  scene.tick()
+  renderer.endMode()
+
   beginDrawing()
   clearBackground(Black)
-  scene.tick()
+  renderer.draw()
   endDrawing()
 
 proc main =
@@ -35,6 +38,9 @@ proc main =
     unloadGame() # Unload loaded data (textures, sounds, models...)
     closeWindow()
 
+  target = loadRenderTexture(320, 260)
+
+  setTextureFilter(target.texture, TextureFilter.Point)
   initGame()
   when defined(emscripten):
     emscriptenSetMainLoop(tick, 60, 1)

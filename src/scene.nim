@@ -1,7 +1,9 @@
 import tables
+import renderer
 
 type Scene* = object
   name*: string
+  getRenderer*: proc(): Renderer
   load*: proc ()
   update*: proc ()
   unload*: proc ()
@@ -26,3 +28,5 @@ proc switch*(scene: string) =
   
 proc tick* =
   current.update()
+
+proc getRenderer*(): Renderer = current.getRenderer()
