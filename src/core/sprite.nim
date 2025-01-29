@@ -1,5 +1,5 @@
 import raylib as rl
-import math
+import extra_math
 
 type
   Direction* {.size: sizeof(int8).} = enum 
