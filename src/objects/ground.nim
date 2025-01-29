@@ -1,43 +1,30 @@
 import raylib as rl
-import ../core/sprite, ../core/extra_math
+import ../core/sprite, ../core/extra_math, ../core/refs
 import std/random
 
 type GroundTile* = object
     position*: rl.Vector2
     sprite*: StaticSprite
 
-proc generate*(x: float, y: float, amount: int32): seq[GroundTile] =
+proc generate*(x: float, y: float, amount: int32, layers: int): seq[GroundTile] =
     result = @[]
     randomize()
+    let texture = newRef(rl.loadTexture("assets/pipe_n_ground.png"))
     const width = 32
     const height = 16
     const size = Size(width: width, height: height)
     for i in 0..<amount:
-      result.add(GroundTile(
-        position: rl.Vector2(x: x + i.float * width, y: y - height * 3),
-        sprite: newStaticSprite(
-          texture= rl.loadTexture("assets/pipe_n_ground.png"),
-          size= size,
-          offset= (int32(32 * rand(0..1)), int32(48))
-        ))
-      )
-      result.add(GroundTile(
-        position: rl.Vector2(x: x + i.float * width, y: y - height * 2),
-        sprite: newStaticSprite(
-          texture= rl.loadTexture("assets/pipe_n_ground.png"),
-          size= size,
-          offset= (int32(32 * rand(0..1)), int32(64))
-        ))
-      )
-      result.add(GroundTile(
-        position: rl.Vector2(x: x + i.float * width, y: y - height),
-        sprite: newStaticSprite(
-          texture= rl.loadTexture("assets/pipe_n_ground.png"),
-          size= size,
-          offset= (int32(32 * rand(0..1)), int32(64))
-        ))
-      )
-    
+      for j in 0..<layers:
+        let yOffset = if j == layers - 1: 48 else: 64
+        echo yOffset, " ", j, " ", y - height * j.float32
+        result.add(GroundTile(
+          position: rl.Vector2(x: x + i.float * width, y: y - height * j.float32),
+          sprite: newStaticSprite(
+            texture = texture,
+            size = size,
+            offset= (int32(width * rand(0..1)), int32(yOffset))
+          ))
+        )
       
 proc draw*(self: GroundTile) =
     self.sprite.draw(self.position)
