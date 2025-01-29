@@ -11,3 +11,4 @@ proc update*(tube: var Tube, speed: float, delta: float) =
 
 proc draw*(self: Tube) =
   self.sprite.draw(self.position)
+  
