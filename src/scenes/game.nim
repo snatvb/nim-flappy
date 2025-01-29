@@ -2,13 +2,9 @@ import raylib as rl
 import std/random
 import ../scene, ../renderer as r
 import ../core/sprite, ../core/extra_math, ../core/ticker, ../core/refs, ../core/gradient
-import ../objects/tube, ../objects/ground
+import ../objects/tube, ../objects/ground, ../objects/player as pl
 
 type
-  Player = object
-    position: rl.Vector2
-    sprite: Sprite
-    
   TubeType = enum
     Top, Bottom
     
@@ -129,13 +125,14 @@ proc unload* =
 proc update* = 
   let delta = rl.getFrameTime()
   
+  player.update(delta)
+  
   if rl.isKeyPressed(rl.Space):
     env.withHint = false
 
   for i in 0..<groundTiles.len:
     groundTiles[i].update(speed , delta, groundTiles.len div LAYERS)
 
-  player.sprite.tick(delta)
   
   var toRemove: seq[int]
   for i in 0..<tubes.len:
@@ -150,6 +147,7 @@ proc update* =
 
 proc draw* =
   env.background.draw(rl.Vector2(x: 0, y: 0))
+  let delta = rl.getFrameTime()
 
   for i in 0..<tubes.len:
     tubes[i].draw()
@@ -165,8 +163,8 @@ proc draw* =
       renderer.height - 32, fontSize, White
     )
 
-  player.sprite.draw(player.position)
-    
+  player.draw(delta)
+
   rl.drawRectangle(0, 0, renderer.width, 16, SKY_COLOR)
   env.foreground.draw(rl.Vector2(x: 0, y: 16))
 
