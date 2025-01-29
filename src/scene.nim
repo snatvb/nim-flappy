@@ -5,6 +5,7 @@ type Scene* = object
   name*: string
   getRenderer*: proc(): Renderer
   load*: proc ()
+  draw*: proc ()
   update*: proc ()
   unload*: proc ()
   
@@ -28,5 +29,8 @@ proc switch*(scene: string) =
   
 proc tick* =
   current.update()
+  
+proc draw* =
+  current.draw()
 
 proc getRenderer*(): Renderer = current.getRenderer()

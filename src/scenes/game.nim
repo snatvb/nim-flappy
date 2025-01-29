@@ -1,7 +1,7 @@
 import raylib as rl
 import std/random
 import ../scene, ../renderer as r
-import ../core/sprite, ../core/math, ../core/ticker
+import ../core/sprite, ../core/extra_math, ../core/ticker
 import ../objects/tube, ../objects/ground
 
 type
@@ -91,22 +91,16 @@ proc unload* =
   renderer = nil
 
 proc update* = 
-  rl.drawText(
-    "PRESS [SPACE] TO JUMP", renderer.width div 2 -
-    rl.measureText("PRESS [SPACE] TO JUMP", 20) div 2,
-    30, 20, White
-  )
-  for i in 0..<groundTiles.len:
-    groundTiles[i].draw()
-
   let delta = rl.getFrameTime()
+
+  for i in 0..<groundTiles.len:
+    groundTiles[i].update(speed , delta, groundTiles.len div 3)
+
   player.sprite.tick(delta)
-  player.sprite.draw(player.position)
   
   var toRemove: seq[int]
   for i in 0..<tubes.len:
     tubes[i].update(speed, delta)
-    tubes[i].draw()
     if tubes[i].position.x < -32:
       toRemove.add(i)
       
@@ -116,10 +110,27 @@ proc update* =
 
   spawnTicker.update(delta)
 
+proc draw* =
+  rl.drawText(
+    "PRESS [SPACE] TO JUMP", renderer.width div 2 -
+    rl.measureText("PRESS [SPACE] TO JUMP", 20) div 2,
+    30, 20, White
+  )
+
+  for i in 0..<groundTiles.len:
+    groundTiles[i].draw()
+
+  player.sprite.draw(player.position)
+
+  for i in 0..<tubes.len:
+    tubes[i].draw()
+
+
 const def* = Scene(
   name: "game",
   load: load,
   getRenderer: proc(): r.Renderer = renderer,
+  draw: draw,
   update: update,
   unload: unload,
 )

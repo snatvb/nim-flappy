@@ -1,4 +1,4 @@
-import raylib
+import raylib as rl
 import scenes/welcome, scenes/game
 import scene
 import renderer
@@ -18,11 +18,16 @@ proc initGame =
   scene.init(@[welcome.def, game.def], welcome.def)
 
 proc unloadGame = discard
+var paused = false
 
 proc tick =
   var renderer = scene.getRenderer()
   renderer.beginMode()
-  scene.tick()
+  if rl.isKeyPressed(rl.P):
+    paused = not paused
+  if not paused:
+    scene.tick()
+  scene.draw()
   renderer.endMode()
 
   beginDrawing()
