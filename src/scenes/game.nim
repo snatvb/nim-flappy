@@ -150,6 +150,9 @@ proc update* =
       if hitTest(player.position, tubes[i].position, player.sprite.size, tubes[i].sprite.size):
         gameOver = true
         
+  if player.position.y > (renderer.height - LAYERS * 16).float32 or player.position.y < 0:
+    gameOver = true
+        
   if gameOver:
     scene.switch("welcome")
     return
