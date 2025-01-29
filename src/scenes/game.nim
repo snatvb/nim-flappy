@@ -8,6 +8,9 @@ type
   Player = object
     position: rl.Vector2
     sprite: Sprite
+    
+  TubeType = enum
+    Top, Bottom
 
 var player: Player
 var tubes: seq[Tube]
@@ -17,22 +20,32 @@ var groundTiles: seq[GroundTile]
 
 var renderer: Renderer
 
-proc newTube(): Tube =
+# func takeFlip(kind: TubeType): FlipDirection =
+#   if kind == TubeType.Bottom:
+#     result = FlipDirection.Flipped
+#   else:
+#     result = FlipDirection.Normal
+
+proc newTube(kind: TubeType): Tube =
+  randomize()
   var variant = int32(rand(0..3))
   var screenWidth = renderer.width.float
   var screenHeight = renderer.height.float
-  var position = rl.Vector2(x: screenWidth + 32, y: screenHeight - 64)
+
+  var top = if kind == TubeType.Bottom: screenHeight - 64 else: 0
+  var position = rl.Vector2(x: screenWidth + 32, y: top)
   var size = Size(width: 32 , height: 48)
   var offset = (variant * 32, int32(0))
+  var flipY = if kind == TubeType.Bottom: FlipDirection.Normal else: FlipDirection.Flipped
 
   if tubes_pool.len > 0:
     var tube = tubes_pool.pop()
     tube.position = position
     tube.sprite.offset = offset
+    tube.sprite.flipY(flipY)
     result = tube
   else:
-    randomize()
-    result = Tube(
+    var tube = Tube(
       position: position,
       sprite: newStaticSprite(
         texture= rl.loadTexture("assets/pipe_n_ground.png"),
@@ -40,16 +53,19 @@ proc newTube(): Tube =
         offset= offset,
       )
     )
+    tube.sprite.flipY(flipY)
+    result = tube
     
 proc freeTube(index: int) =
   tubes_pool.add(move(tubes[index]))
   tubes.del(index)
   
-proc spawnTube() 
-var spawnTicker = newTicker(spawnTube, 1.float32)
+proc spawnTubes() 
+var spawnTicker = newTicker(spawnTubes, 1.float32)
 
-proc spawnTube =
-  tubes.add(newTube())
+proc spawnTubes =
+  tubes.add(newTube(TubeType.Top))
+  tubes.add(newTube(TubeType.Bottom))
   var newInterval = rand(1000..2000).float32 / 1000
   spawnTicker.updateInterval(newInterval)
 
@@ -65,7 +81,6 @@ proc load* =
     )
   )
 
-  tubes.add(newTube())
   randomize()
   let amount = renderer.width div 32 + 2
   groundTiles = ground.generate(0, renderer.height.float - 16, amount)
@@ -93,7 +108,7 @@ proc update* =
     if tubes[i].position.x < -32:
       toRemove.add(i)
       
-  for i in 0..<toRemove.len:
+  for i in countdown(toRemove.high, 0):
     freeTube(toRemove[i])
     
   for i in 0..<groundTiles.len:

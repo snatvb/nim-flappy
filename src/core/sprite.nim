@@ -21,6 +21,9 @@ type
     offset*: (int32, int32)
     texture*: rl.Texture2D
     rect*: rl.Rectangle
+  
+  FlipDirection* {.size: sizeof(int8).} = enum
+    Normal = -1, Flipped = 1
     
 func newSprite*(texture: sink rl.Texture2D, size: Size, frames: int16, offset: (int32, int32) = (0, 0), frame:int16 = 0, animationSpeed = 0.2): Sprite =
   Sprite(
@@ -54,6 +57,14 @@ proc tick*(self: var Sprite, delta: float32) =
 proc draw*(self: Sprite, position: rl.Vector2) =
   rl.drawTexture(self.texture, self.rect, position, rl.White)
   
+# proc flipX*(self: var Sprite, direction: FlipDirection) =
+#   self.rect.width *= direction.float32
+#   self.rect.x += self.size.width.float32
+
+# proc flipY*(self: var Sprite, direction: FlipDirection) =
+#   self.rect.height *= direction.float32
+#   self.rect.y += self.size.height.float32
+
 proc newStaticSprite*(texture: sink rl.Texture2D, size: Size, offset: (int32, int32) = (0, 0)): StaticSprite =
   StaticSprite(
     texture: texture,
@@ -69,3 +80,22 @@ proc newStaticSprite*(texture: sink rl.Texture2D, size: Size, offset: (int32, in
 
 proc draw*(self: StaticSprite, position: rl.Vector2) =
   rl.drawTexture(self.texture, self.rect, position, rl.White)
+  
+proc flipX*(self: var StaticSprite, direction: FlipDirection) =
+  if direction == FlipDirection.Normal:
+    if self.rect.width < 0:
+      self.rect.x *= -1
+  else:
+    if self.rect.width > 0:
+      self.rect.x *= -1
+
+proc flipY(self: var StaticSprite) =
+  self.rect.height *= -1
+
+proc flipY*(self: var StaticSprite, direction: FlipDirection) =
+  if direction == FlipDirection.Normal:
+    if self.rect.height < 0:
+      self.flipY()
+  else:
+    if self.rect.height > 0:
+      self.flipY()
