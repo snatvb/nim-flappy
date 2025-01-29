@@ -128,6 +128,9 @@ proc unload* =
 
 proc update* = 
   let delta = rl.getFrameTime()
+  
+  if rl.isKeyPressed(rl.Space):
+    env.withHint = false
 
   for i in 0..<groundTiles.len:
     groundTiles[i].update(speed , delta, groundTiles.len div LAYERS)
