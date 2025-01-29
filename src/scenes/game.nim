@@ -1,7 +1,13 @@
 import raylib as rl
 import std/random
 import ../scene, ../renderer as r
-import ../core/sprite, ../core/extra_math, ../core/ticker, ../core/refs, ../core/gradient
+import
+  ../core/sprite,
+  ../core/extra_math,
+  ../core/ticker,
+  ../core/refs,
+  ../core/gradient,
+  ../core/physics
 import ../objects/tube, ../objects/ground, ../objects/player as pl
 
 type
@@ -84,7 +90,7 @@ proc spawnTubes =
 proc load* =
   renderer = newRenderer(getScreenWidth() div 4, getScreenHeight() div 4)
   player = Player(
-    position: rl.Vector2(x:100, y:100),
+    position: rl.Vector2(x:100, y:64),
     sprite: sprite.newSprite(
       texture= newRef(rl.loadTexture("assets/birds.png")),
       size= Size(width: 16, height: 16),
@@ -133,13 +139,20 @@ proc update* =
 
   for i in 0..<groundTiles.len:
     groundTiles[i].update(speed , delta, groundTiles.len div LAYERS)
-
   
+  var gameOver = false
   var toRemove: seq[int]
   for i in 0..<tubes.len:
     tubes[i].update(speed, delta)
     if tubes[i].position.x < -32:
       toRemove.add(i)
+    else:
+      if hitTest(player.position, tubes[i].position, player.sprite.size, tubes[i].sprite.size):
+        gameOver = true
+        
+  if gameOver:
+    scene.switch("welcome")
+    return
       
   for i in countdown(toRemove.high, 0):
     freeTube(toRemove[i])

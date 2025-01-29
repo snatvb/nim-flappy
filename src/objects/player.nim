@@ -1,5 +1,4 @@
 import raylib as rl
-import math
 import ../core/sprite, ../core/extra_math
 
 type
