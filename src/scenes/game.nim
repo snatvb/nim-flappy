@@ -129,6 +129,7 @@ proc update* =
   
   if rl.isKeyPressed(rl.Space):
     env.withHint = false
+    player.jump()
 
   for i in 0..<groundTiles.len:
     groundTiles[i].update(speed , delta, groundTiles.len div LAYERS)
