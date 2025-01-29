@@ -9,13 +9,32 @@ type GroundTile* = object
 proc generate*(x: float, y: float, amount: int32): seq[GroundTile] =
     result = @[]
     randomize()
+    const width = 32
+    const height = 16
+    const size = Size(width: width, height: height)
     for i in 0..<amount:
       result.add(GroundTile(
-        position: rl.Vector2(x: x + i.float * 32, y: y - 16),
+        position: rl.Vector2(x: x + i.float * width, y: y - height * 3),
         sprite: newStaticSprite(
           texture= rl.loadTexture("assets/pipe_n_ground.png"),
-          size= Size(width: 32, height: 16),
+          size= size,
           offset= (int32(32 * rand(0..1)), int32(48))
+        ))
+      )
+      result.add(GroundTile(
+        position: rl.Vector2(x: x + i.float * width, y: y - height * 2),
+        sprite: newStaticSprite(
+          texture= rl.loadTexture("assets/pipe_n_ground.png"),
+          size= size,
+          offset= (int32(32 * rand(0..1)), int32(64))
+        ))
+      )
+      result.add(GroundTile(
+        position: rl.Vector2(x: x + i.float * width, y: y - height),
+        sprite: newStaticSprite(
+          texture= rl.loadTexture("assets/pipe_n_ground.png"),
+          size= size,
+          offset= (int32(32 * rand(0..1)), int32(64))
         ))
       )
       

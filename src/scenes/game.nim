@@ -32,7 +32,7 @@ proc newTube(kind: TubeType): Tube =
   var screenWidth = renderer.width.float
   var screenHeight = renderer.height.float
 
-  var top = if kind == TubeType.Bottom: screenHeight - 64 else: 0
+  var top = if kind == TubeType.Bottom: screenHeight - 32 * 3 + 12 else: 0
   var position = rl.Vector2(x: screenWidth + 32, y: top)
   var size = Size(width: 32 , height: 48)
   var offset = (variant * 32, int32(0))
@@ -81,9 +81,8 @@ proc load* =
     )
   )
 
-  randomize()
   let amount = renderer.width div 32 + 2
-  groundTiles = ground.generate(0, renderer.height.float - 16, amount)
+  groundTiles = ground.generate(0, renderer.height.float, amount)
 
 proc unload* =
   tubes.setLen(0)
@@ -97,6 +96,9 @@ proc update* =
     rl.measureText("PRESS [SPACE] TO JUMP", 20) div 2,
     30, 20, White
   )
+  for i in 0..<groundTiles.len:
+    groundTiles[i].draw()
+
   let delta = rl.getFrameTime()
   player.sprite.tick(delta)
   player.sprite.draw(player.position)
@@ -111,8 +113,6 @@ proc update* =
   for i in countdown(toRemove.high, 0):
     freeTube(toRemove[i])
     
-  for i in 0..<groundTiles.len:
-    groundTiles[i].draw()
 
   spawnTicker.update(delta)
 
