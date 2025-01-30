@@ -31,12 +31,6 @@ var env: Env
 
 var renderer: Renderer
 
-# func takeFlip(kind: TubeType): FlipDirection =
-#   if kind == TubeType.Bottom:
-#     result = FlipDirection.Flipped
-#   else:
-#     result = FlipDirection.Normal
-
 var tubeOffsets = @[0, 4, 8, -8, 12, -12]
 
 proc newTube(kind: TubeType, tubeOffset: float32): Tube =
