@@ -1,15 +1,16 @@
 import raylib as rl
 import ../core/sprite, ../core/extra_math, ../core/refs
-import std/random
+import os,std/random
 
 type GroundTile* = object
     position*: rl.Vector2
     sprite*: StaticSprite
 
+let exeDir = getAppDir()
 proc generate*(x: float, y: float, amount: int32, layers: int): seq[GroundTile] =
     result = @[]
     randomize()
-    let texture = newRef(rl.loadTexture("assets/pipe_n_ground.png"))
+    let texture = newRef(rl.loadTexture(exeDir / "assets" / "pipe_n_ground.png"))   
     const width = 32
     const height = 16
     const size = Size(width: width, height: height)

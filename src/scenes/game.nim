@@ -1,4 +1,4 @@
-import raylib as rl
+import os, raylib as rl
 import std/random
 import ../scene, ../renderer as r
 import
@@ -28,6 +28,7 @@ var env: Env
 var score: Score
 
 var renderer: Renderer
+let exeDir = getAppDir()
 
 var tubeOffsets = @[0, 4, 8, -8, 12, -12]
 
@@ -59,7 +60,7 @@ proc newTube(kind: TubeType, tubeOffset: float32): Tube =
     var tube = Tube(
       position: position,
       sprite: newStaticSprite(
-        texture= newRef(rl.loadTexture("assets/pipe_n_ground.png")),
+        texture= newRef(rl.loadTexture(exeDir / "assets" / "pipe_n_ground.png")),
         size= size,
         offset= offset,
       )
@@ -89,7 +90,7 @@ proc load* =
     position: rl.Vector2(x:100, y:64),
     collider: (rl.Vector2(x:3, y: 3), Size(width: 10, height: 10)),
     sprite: sprite.newSprite(
-      texture= newRef(rl.loadTexture("assets/birds.png")),
+      texture= newRef(rl.loadTexture(exeDir / "assets" / "birds.png")),
       size= Size(width: 16, height: 16),
       animationSpeed= 0.1,
       frames= 4,
@@ -99,7 +100,7 @@ proc load* =
   let amount = renderer.width div 32 + 2
   groundTiles = ground.generate(0, renderer.height.float, amount, LAYERS)
   
-  let bgTexture = newRef(rl.loadTexture("assets/background/background3.png"))
+  let bgTexture = newRef(rl.loadTexture(exeDir / "assets" / "background" / "background3.png"))
   let fgGradient = newRef(gradient(
     renderer.width,
     64,
