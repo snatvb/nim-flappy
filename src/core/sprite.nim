@@ -63,14 +63,6 @@ proc tick*(self: var Sprite, delta: float32) =
   
 proc draw*(self: Sprite, position: rl.Vector2) =
   rl.drawTexture(self.texture[], self.rect, rl.Rectangle(x: position.x, y: position.y, width: self.size.width.float32, height: self.size.height.float32), self.origin, self.rotation, rl.White)
-  
-# proc flipX*(self: var Sprite, direction: FlipDirection) =
-#   self.rect.width *= direction.float32
-#   self.rect.x += self.size.width.float32
-
-# proc flipY*(self: var Sprite, direction: FlipDirection) =
-#   self.rect.height *= direction.float32
-#   self.rect.y += self.size.height.float32
 
 proc newStaticSprite*(texture: ref rl.Texture2D, size: Size, offset: (int32, int32) = (0, 0)): StaticSprite =
   StaticSprite(
