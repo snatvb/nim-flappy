@@ -25,7 +25,7 @@ const SKY_COLOR = rl.Color(r:0, g:57, b:109, a:255)
 var player: Player
 var tubes: seq[Tube]
 var tubesPool: seq[Tube]
-var speed = 100.float
+var speed = 100.float32
 var groundTiles: seq[GroundTile]
 var env: Env
 
@@ -36,8 +36,8 @@ var tubeOffsets = @[0, 4, 8, -8, 12, -12]
 proc newTube(kind: TubeType, tubeOffset: float32): Tube =
   randomize()
   var variant = int32(rand(0..3))
-  var screenWidth = renderer.width.float
-  var screenHeight = renderer.height.float
+  var screenWidth = renderer.width.float32
+  var screenHeight = renderer.height.float32
 
   var top =
     if kind == TubeType.Bottom:
