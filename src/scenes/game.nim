@@ -8,7 +8,7 @@ import
   ../core/refs,
   ../core/gradient,
   ../core/physics
-import ../objects/tube, ../objects/ground, ../objects/player as pl
+import ../objects/tube, ../objects/ground, ../objects/player as pl, ../objects/score as sc
 
 type
   TubeType = enum
@@ -28,6 +28,7 @@ var tubesPool: seq[Tube]
 var speed = 100.float32
 var groundTiles: seq[GroundTile]
 var env: Env
+var score: Score
 
 var renderer: Renderer
 
@@ -115,6 +116,7 @@ proc load* =
     ),
     withHint: true,
   )
+  score = Score()
 
 proc unload* =
   tubes.setLen(0)
@@ -178,6 +180,7 @@ proc draw* =
 
   rl.drawRectangle(0, 0, renderer.width, 16, SKY_COLOR)
   env.foreground.draw(rl.Vector2(x: 0, y: 16))
+  score.draw(delta, renderer.width)
 
 
 const def* = Scene(
