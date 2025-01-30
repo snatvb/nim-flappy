@@ -11,9 +11,6 @@ import
 import ../objects/tube, ../objects/ground, ../objects/player as pl, ../objects/score as sc
 
 type
-  TubeType = enum
-    Top, Bottom
-    
   Env = object
     background: StaticSprite
     foreground: StaticSprite

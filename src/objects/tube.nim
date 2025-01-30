@@ -2,6 +2,9 @@ import raylib as rl
 import ../core/sprite
 
 type
+  TubeType* = enum
+    Top, Bottom
+
   Tube* = object
     position*: rl.Vector2
     sprite*: StaticSprite
