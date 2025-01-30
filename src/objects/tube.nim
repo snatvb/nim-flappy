@@ -2,10 +2,12 @@ import raylib as rl
 import ../core/sprite
 
 type
-  TubeType* = enum
+  TubeType* {.size: sizeof(int8).} = enum
     Top, Bottom
 
   Tube* = object
+    kind*: TubeType
+    visited*: bool
     position*: rl.Vector2
     sprite*: StaticSprite
 

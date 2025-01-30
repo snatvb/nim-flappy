@@ -52,6 +52,8 @@ proc newTube(kind: TubeType, tubeOffset: float32): Tube =
     tube.position = position
     tube.sprite.offset = offset
     tube.sprite.flipY(flipY)
+    tube.kind = kind
+    tube.visited = false
     result = tube
   else:
     var tube = Tube(
@@ -62,6 +64,8 @@ proc newTube(kind: TubeType, tubeOffset: float32): Tube =
         offset= offset,
       )
     )
+    tube.visited = false
+    tube.kind = kind
     tube.sprite.flipY(flipY)
     result = tube
     
@@ -83,6 +87,7 @@ proc load* =
   renderer = newRenderer(getScreenWidth() div 4, getScreenHeight() div 4)
   player = Player(
     position: rl.Vector2(x:100, y:64),
+    collider: (rl.Vector2(x:3, y: 3), Size(width: 10, height: 10)),
     sprite: sprite.newSprite(
       texture= newRef(rl.loadTexture("assets/birds.png")),
       size= Size(width: 16, height: 16),
@@ -135,13 +140,18 @@ proc update* =
   
   var gameOver = false
   var toRemove: seq[int]
+  
+  var colliderPlayerPos: rl.Vector2 = player.position + player.collider[0]
   for i in 0..<tubes.len:
     tubes[i].update(speed, delta)
     if tubes[i].position.x < -32:
       toRemove.add(i)
     else:
-      if hitTest(player.position, tubes[i].position, player.sprite.size, tubes[i].sprite.size):
+      if hitTest(colliderPlayerPos, tubes[i].position, player.collider[1], tubes[i].sprite.size):
         gameOver = true
+      if tubes[i].kind == TubeType.Top and tubes[i].position.x < player.position.x and not tubes[i].visited:
+        tubes[i].visited = true
+        score.increment()
         
   if player.position.y > (renderer.height - LAYERS * 16).float32 or player.position.y < 0:
     gameOver = true

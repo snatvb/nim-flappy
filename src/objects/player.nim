@@ -4,6 +4,7 @@ import ../core/sprite, ../core/extra_math
 type
   Player* = object
     position*: rl.Vector2
+    collider*: (rl.Vector2, Size)
     sprite*: Sprite
     velocity*: float32
     maxVelocity*: float32 = 10
